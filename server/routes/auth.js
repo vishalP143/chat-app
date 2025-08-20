@@ -50,4 +50,17 @@ router.post("/login", async (req, res) => {
   }
 });
 
+const authMiddleware = require("../middleware/authMiddleware");
+
+// PROTECTED route
+router.get("/me", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 module.exports = router;
